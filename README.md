@@ -29,7 +29,8 @@ A comprehensive, student-focused study planner web application that transforms c
 
 ## 📁 Project Structure
 project/
-├── index.html # Landing page
+
+├── index.html # Landing page  
 ├── about.html # About & how it works
 ├── contact.html # Contact form
 ├── planner-setup.html # Subject & preference input
