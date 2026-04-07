@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Plan | StudyFlow</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f7f7f7; color: #262524; }
+    :root {
+      --pure-white: #fdfdfd; --warm-taupe: #a7917f; --charcoal: #585653;
+      --light-greige: #e0deda; --warm-offwhite: #eeedeb; --near-black: #262524;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+      --card-radius: 24px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+    h2 { font-size: 2rem; border-left: 5px solid var(--warm-taupe); padding-left: 1rem; margin-bottom: 1.5rem; }
+    h3 { font-size: 1.2rem; margin-bottom: 1rem; }
+    .section { padding: 48px 0; }
+    .card { background: white; border-radius: var(--card-radius); padding: 1.5rem; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+    .checklist-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--warm-offwhite); border-radius: 20px; margin-bottom: 12px; }
+    .progress-bar { background: var(--light-greige); border-radius: 40px; height: 10px; overflow: hidden; }
+    .progress-fill { background: var(--warm-taupe); width: 0%; height: 100%; transition: width 0.3s; }
+    .btn { background: var(--warm-taupe); padding: 10px 24px; border-radius: 40px; border: none; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--warm-taupe); }
+    .btn:hover { transform: translateY(-2px); }
+    .navbar { background: white; box-shadow: var(--shadow-sm); position: sticky; top: 0; }
+    .nav-container { display: flex; justify-content: space-between; padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--charcoal); font-weight: 500; }
+    .nav-links a.active { color: var(--warm-taupe); }
+    .menu-toggle { display: none; }
+    footer { background: var(--near-black); color: white; text-align: center; padding: 40px; margin-top: 40px; }
+    .stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-mini { text-align: center; padding: 12px; background: var(--warm-offwhite); border-radius: 16px; }
+    .motivation { text-align: center; padding: 20px; background: linear-gradient(135deg, var(--warm-offwhite), white); border-radius: 20px; margin-bottom: 20px; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; background: white; width: 100%; top: 70px; left: 0; padding: 20px; }
+      .nav-links.show { display: flex; }
+      .menu-toggle { display: block; }
+      .stats-mini { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">📚 StudyFlow</a>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="planner-setup.html">Planner Setup</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="daily-plan.html" class="active">Daily Plan</a></li>
+      <li><a href="reschedule.html">Reschedule</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <h2>✅ Today's Focus Plan</h2>
+    
+    <!-- Motivation -->
+    <div class="motivation" id="motivationMessage">
+      🌟 "Small progress is still progress. Keep going!"
+    </div>
+    
+    <!-- Stats Mini -->
+    <div class="stats-mini">
+      <div class="stat-mini"><strong>📚 Today's Tasks</strong><br><span id="taskCount">0</span></div>
+      <div class="stat-mini"><strong>⏱️ Total Hours</strong><br><span id="totalHours">0</span></div>
+      <div class="stat-mini"><strong>🎯 Focus Score</strong><br><span id="focusScore">0</span>%</div>
+    </div>
+    
+    <!-- Checklist -->
+    <div class="card">
+      <h3>📋 Study Checklist</h3>
+      <div id="checklist"></div>
+    </div>
+    
+    <!-- Progress -->
+    <div class="card">
+      <h3>📈 Today's Progress</h3>
+      <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+      <p id="progressText" style="margin-top: 12px; text-align: center;"></p>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+      <button id="markMissedBtn" class="btn">🔄 Mark as Missed & Reschedule</button>
+      <button id="completeAllBtn" class="btn btn-outline">✅ Complete All Today's Tasks</button>
+      <button id="refreshPlanBtn" class="btn btn-outline">🔄 Refresh Plan</button>
+    </div>
+    <div id="msg" style="margin-top: 20px;"></div>
+    
+    <!-- Productivity Tip -->
+    <div class="card" style="background: var(--warm-offwhite);">
+      <h3>💡 Productivity Tip</h3>
+      <p id="tip">Take a 5-minute break every 25 minutes to maintain focus and avoid burnout.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container"><p>© 2025 StudyFlow — Stay consistent, stay motivated</p></div>
+</footer>
+
+<script>
+  let schedule = JSON.parse(localStorage.getItem('study_schedule')) || [];
+  let subjects = JSON.parse(localStorage.getItem('study_subjects')) || [];
+  
+  if (!schedule.length && subjects.length) {
+    let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    subjects.forEach(sub => {
+      let remaining = sub.hours;
+      for (let i = 0; i < days.length && remaining > 0; i++) {
+        let alloc = Math.min(remaining, 4);
+        schedule.push({day: days[i], subject: sub.name, hours: alloc, completed: false, exam: sub.exam});
+        remaining -= alloc;
+      }
+    });
+    localStorage.setItem('study_schedule', JSON.stringify(schedule));
+  }
+  
+  let today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  let todaysTasks = schedule.filter(t => t.day === today);
+  
+  function render() {
+    let html = '';
+    let total = 0, completed = 0;
+    todaysTasks.forEach((t, i) => {
+      total += t.hours;
+      if (t.completed) completed += t.hours;
+      html += `<div class="checklist-item">
+        <input type="checkbox" data-idx="${i}" ${t.completed ? 'checked' : ''} style="width: 20px; height: 20px;">
+        <div style="flex: 1;">
+          <strong>${t.subject}</strong><br>
+          <small>⏰ ${t.hours.toFixed(1)} hours • ${t.exam ? 'Exam: ' + t.exam : 'Regular study'}</small>
+        </div>
+        <span class="badge" style="background: ${t.completed ? '#a7917f' : '#e0deda'}">${t.completed ? 'Done' : 'Pending'}</span>
+      </div>`;
+    });
+    if (todaysTasks.length === 0) html = '<p style="text-align: center;">🎉 No tasks scheduled for today! Enjoy your free time or review past material.</p>';
+    document.getElementById('checklist').innerHTML = html;
+    document.getElementById('taskCount').innerText = todaysTasks.length;
+    document.getElementById('totalHours').innerText = total.toFixed(1);
+    
+    let percent = total > 0 ? (completed / total) * 100 : 100;
+    document.getElementById('progressFill').style.width = `${percent}%`;
+    document.getElementById('progressText').innerText = `${percent.toFixed(0)}% completed (${completed.toFixed(1)}/${total.toFixed(1)} hours)`;
+    document.getElementById('focusScore').innerText = Math.round(percent);
+    
+    // Motivation messages
+    let messages = [
+      "🌟 " + (percent >= 80 ? "Amazing progress! You're on fire!" : percent >= 50 ? "Good work! Keep pushing!" : "Every step counts. Start with one task!"),
+      "💪 " + (percent === 100 ? "Perfect day! You've earned a reward!" : "You've got this! One task at a time.")
+    ];
+    document.getElementById('motivationMessage').innerHTML = messages[0];
+    
+    document.querySelectorAll('#checklist input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        let idx = e.target.dataset.idx;
+        if (todaysTasks[idx]) {
+          todaysTasks[idx].completed = e.target.checked;
+          localStorage.setItem('study_schedule', JSON.stringify(schedule));
+          render();
+        }
+      });
+    });
+  }
+  
+  document.getElementById('markMissedBtn')?.addEventListener('click', () => {
+    let pending = todaysTasks.filter(t => !t.completed);
+    if (pending.length) {
+      let task = pending[0];
+      let futureDays = ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      let newDay = futureDays[Math.floor(Math.random() * futureDays.length)];
+      task.day = newDay;
+      localStorage.setItem('study_schedule', JSON.stringify(schedule));
+      document.getElementById('msg').innerHTML = `<div class="card" style="background: #e8f5e9;">🔄 "${task.subject}" rescheduled to ${newDay}! Check your updated schedule.</div>`;
+      render();
+      setTimeout(() => document.getElementById('msg').innerHTML = '', 3000);
+    } else {
+      document.getElementById('msg').innerHTML = '<div class="card">✅ All tasks completed! No missed tasks to reschedule.</div>';
+      setTimeout(() => document.getElementById('msg').innerHTML = '', 2000);
+    }
+  });
+  
+  document.getElementById('completeAllBtn')?.addEventListener('click', () => {
+    todaysTasks.forEach(t => t.completed = true);
+    localStorage.setItem('study_schedule', JSON.stringify(schedule));
+    render();
+    document.getElementById('msg').innerHTML = '<div class="card">🎉 Great job! All today\'s tasks marked as complete!</div>';
+    setTimeout(() => document.getElementById('msg').innerHTML = '', 2000);
+  });
+  
+  document.getElementById('refreshPlanBtn')?.addEventListener('click', () => {
+    window.location.reload();
+  });
+  
+  render();
+  document.getElementById('menuToggle')?.addEventListener('click', () => document.getElementById('navLinks')?.classList.toggle('show'));
+</script>
+</body>
+</html>

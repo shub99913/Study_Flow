@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | StudyFlow</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background-color: #f7f7f7; color: #262524; line-height: 1.5; scroll-behavior: smooth; }
+    :root {
+      --soft-white: #f7f7f7; --pure-white: #fdfdfd; --warm-offwhite: #eeedeb;
+      --light-greige: #e0deda; --muted-stone: #c6c3be; --warm-taupe: #a7917f;
+      --charcoal: #585653; --near-black: #262524;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.05); --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+      --card-radius: 24px; --transition: all 0.2s ease;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    h1 { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; }
+    h2 { font-size: 2rem; font-weight: 600; margin-bottom: 1.5rem; border-left: 5px solid var(--warm-taupe); padding-left: 1rem; }
+    h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .section { padding: 64px 0; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; background-color: var(--charcoal); color: white; padding: 12px 28px; border-radius: 40px; font-weight: 500; text-decoration: none; transition: var(--transition); }
+    .btn-primary { background-color: var(--warm-taupe); color: var(--near-black); }
+    .btn-primary:hover { background-color: #8e7866; transform: translateY(-2px); }
+    .badge { background: var(--light-greige); padding: 4px 12px; border-radius: 40px; font-size: 0.75rem; font-weight: 500; color: var(--charcoal); display: inline-block; }
+    .card { background: var(--pure-white); border-radius: var(--card-radius); padding: 1.5rem; box-shadow: var(--shadow-sm); transition: var(--transition); }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .navbar { background: var(--pure-white); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1280px; margin: 0 auto; }
+    .logo { font-weight: 700; font-size: 1.5rem; color: var(--near-black); text-decoration: none; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; font-weight: 500; color: var(--charcoal); transition: var(--transition); }
+    .nav-links a:hover, .nav-links a.active { color: var(--warm-taupe); }
+    .menu-toggle { display: none; font-size: 1.8rem; background: none; border: none; cursor: pointer; }
+    footer { background: var(--near-black); color: var(--light-greige); padding: 40px 0; text-align: center; margin-top: 40px; }
+    footer a { color: var(--warm-taupe); text-decoration: none; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; gap: 16px; background: var(--pure-white); position: absolute; top: 70px; left: 0; width: 100%; padding: 24px; }
+      .nav-links.show { display: flex; }
+      .menu-toggle { display: block; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">📚 StudyFlow</a>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="planner-setup.html">Planner Setup</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="daily-plan.html">Daily Plan</a></li>
+      <li><a href="reschedule.html">Reschedule</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <section class="section">
+    <div class="container">
+      <div style="display: flex; flex-wrap: wrap; gap: 40px;">
+        <div style="flex: 1.5;">
+          <h2>How StudyFlow Works</h2>
+          <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Our algorithm uses priority scoring, syllabus load, exam proximity, and available hours to generate a balanced weekly schedule. Missed tasks are dynamically rescheduled to next free slot without breaking deadlines.</p>
+          <div style="margin: 24px 0;">
+            <span class="badge">✨ Priority + urgency</span>
+            <span class="badge">⚡ Auto-reschedule</span>
+            <span class="badge">📊 Progress tracking</span>
+          </div>
+          <p>✔️ Built for students, by students.<br>✔️ Transparent scheduling logic.<br>✔️ 100% local – your data stays private.</p>
+        </div>
+        <div style="flex: 1;">
+          <div class="card">
+            <h3>Our mission</h3>
+            <p>Reduce academic stress by converting raw tasks into an actionable, adaptive timetable. Loved by 5000+ beta users.</p>
+            <div style="margin-top: 20px; background: var(--warm-offwhite); border-radius: 20px; padding: 20px; text-align: center;">
+              <div style="font-size: 2.5rem;">🎯</div>
+              <p><strong>99%</strong> of users report better time management</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-alt">
+    <div class="container">
+      <h2>Scheduling Rules & USP</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+        <div class="card"><h3>📐 Priority Scoring</h3><p>Each subject gets a score based on deadline proximity and priority level.</p></div>
+        <div class="card"><h3>⏰ Smart Distribution</h3><p>Tasks spread across week respecting daily capacity and preferences.</p></div>
+        <div class="card"><h3>🔄 Dynamic Reschedule</h3><p>Missed tasks find next available slot automatically.</p></div>
+        <div class="card"><h3>📈 Visual Progress</h3><p>KPIs and checklists keep you motivated daily.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2025 StudyFlow — smart study planner. <a href="contact.html">Contact us</a></p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('menuToggle')?.addEventListener('click', () => {
+    document.getElementById('navLinks')?.classList.toggle('show');
+  });
+</script>
+</body>
+</html>

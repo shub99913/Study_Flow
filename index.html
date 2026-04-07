@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>StudyFlow | Smart Study Planner</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: #f7f7f7;
+      color: #262524;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    :root {
+      --soft-white: #f7f7f7;
+      --pure-white: #fdfdfd;
+      --warm-offwhite: #eeedeb;
+      --light-greige: #e0deda;
+      --muted-stone: #c6c3be;
+      --warm-taupe: #a7917f;
+      --charcoal: #585653;
+      --near-black: #262524;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.1);
+      --border-radius: 20px;
+      --card-radius: 24px;
+      --transition: all 0.2s ease;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Typography */
+    h1 { font-size: 3rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--near-black); }
+    h2 { font-size: 2rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 1.5rem; border-left: 5px solid var(--warm-taupe); padding-left: 1rem; }
+    h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .section { padding: 64px 0; }
+    .section-alt { background-color: var(--warm-offwhite); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--charcoal);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-primary {
+      background-color: var(--warm-taupe);
+      color: var(--near-black);
+    }
+    .btn-primary:hover {
+      background-color: #8e7866;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--warm-taupe);
+      color: var(--near-black);
+    }
+    .btn-outline:hover {
+      background: var(--warm-taupe);
+      color: white;
+    }
+    .btn-sm {
+      padding: 6px 16px;
+      font-size: 0.85rem;
+    }
+    .badge {
+      background: var(--light-greige);
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      display: inline-block;
+    }
+
+    /* Navigation */
+    .navbar {
+      background: var(--pure-white);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--near-black);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--charcoal);
+      transition: var(--transition);
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--warm-taupe);
+    }
+    .menu-toggle {
+      display: none;
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Cards & Grid */
+    .card {
+      background: var(--pure-white);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 32px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 32px;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--near-black);
+      color: var(--light-greige);
+      padding: 40px 0;
+      text-align: center;
+      margin-top: 40px;
+    }
+    footer a {
+      color: var(--warm-taupe);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+        background: var(--pure-white);
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+        box-shadow: var(--shadow-sm);
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .menu-toggle {
+        display: block;
+      }
+      h1 { font-size: 2.2rem; }
+      .container { padding: 0 20px; }
+      .section { padding: 48px 0; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">📚 StudyFlow</a>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="planner-setup.html">Planner Setup</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="daily-plan.html">Daily Plan</a></li>
+      <li><a href="reschedule.html">Reschedule</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <section class="section">
+    <div class="container">
+      <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: space-between;">
+        <div style="flex: 1;">
+          <span class="badge">AI-powered planner</span>
+          <h1 style="margin-top: 1rem;">Turn chaos into<br>smart study sessions</h1>
+          <p style="font-size: 1.2rem; color: var(--charcoal); margin: 24px 0;">Prioritize subjects, auto-generate weekly timetable, reschedule missed tasks — all in one dashboard.</p>
+          <a href="planner-setup.html" class="btn btn-primary">✨ Start Planning →</a>
+        </div>
+        <div style="flex: 1; background: var(--warm-offwhite); border-radius: 48px; padding: 40px; text-align: center;">
+          <div style="font-size: 4rem;">📅⚡</div>
+          <p style="font-weight: 500;">Smart schedule generation</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-alt">
+    <div class="container">
+      <h2>Why students love StudyFlow</h2>
+      <div class="grid-3">
+        <div class="card"><h3>📋 Subject input + priority</h3><p>Syllabus load, exam dates, priority scores — we convert constraints into time blocks.</p></div>
+        <div class="card"><h3>⏱️ Auto weekly timetable</h3><p>Distributes workload across days based on urgency & available hours.</p></div>
+        <div class="card"><h3>🔄 One-click reschedule</h3><p>Missed a task? Push to next best available slot automatically.</p></div>
+        <div class="card"><h3>✅ Daily checklist</h3><p>Track progress, mark completed, and visualize remaining hours.</p></div>
+        <div class="card"><h3>📊 KPI dashboard</h3><p>Total planned vs completed, upcoming deadlines, risk indicators.</p></div>
+        <div class="card"><h3>🎨 Calm color palette</h3><p>Warm taupe & charcoal design — easy on eyes for long study sessions.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="background: var(--pure-white); border-radius: 48px; padding: 48px; text-align: center;">
+      <h3>📬 Get weekly study tips</h3>
+      <p style="margin-bottom: 20px;">No spam, only productivity insights.</p>
+      <form style="max-width: 400px; margin: 0 auto; display: flex; gap: 12px; flex-wrap: wrap;">
+        <input type="email" placeholder="Your email" style="flex: 1; padding: 12px 16px; border: 1px solid var(--light-greige); border-radius: 40px;" required>
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2025 StudyFlow — smart study planner. Follow us: <a href="#">Twitter</a> | <a href="#">Instagram</a> | <a href="contact.html">Contact</a></p>
+    <p style="margin-top: 8px;">📧 hello@studyflow.com | Designed with warm taupe & charcoal</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('menuToggle')?.addEventListener('click', function() {
+    document.getElementById('navLinks')?.classList.toggle('show');
+  });
+</script>
+</body>
+</html>

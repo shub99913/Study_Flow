@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | StudyFlow</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background-color: #f7f7f7;
+      color: #262524;
+      line-height: 1.5;
+    }
+    :root {
+      --soft-white: #f7f7f7;
+      --pure-white: #fdfdfd;
+      --warm-offwhite: #eeedeb;
+      --light-greige: #e0deda;
+      --muted-stone: #c6c3be;
+      --warm-taupe: #a7917f;
+      --charcoal: #585653;
+      --near-black: #262524;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+      --card-radius: 24px;
+      --transition: all 0.2s ease;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid var(--warm-taupe);
+      padding-left: 1rem;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .section {
+      padding: 48px 0;
+    }
+    .card {
+      background: var(--pure-white);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .btn {
+      background-color: var(--warm-taupe);
+      color: var(--near-black);
+      padding: 8px 20px;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--warm-taupe);
+    }
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.85rem;
+    }
+    .navbar {
+      background: var(--pure-white);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--near-black);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--charcoal);
+      transition: var(--transition);
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--warm-taupe);
+    }
+    .menu-toggle {
+      display: none;
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    footer {
+      background: var(--near-black);
+      color: var(--light-greige);
+      padding: 40px 0;
+      text-align: center;
+      margin-top: 40px;
+    }
+    /* Dashboard specific styles */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .time-greeting {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--pure-white);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--warm-taupe);
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--warm-taupe);
+    }
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--light-greige);
+    }
+    .task-progress {
+      width: 60px;
+      height: 60px;
+    }
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    .task-category {
+      font-size: 0.75rem;
+      color: var(--charcoal);
+    }
+    .task-title {
+      font-weight: 600;
+      margin: 4px 0;
+    }
+    .task-time {
+      font-size: 0.8rem;
+      color: var(--charcoal);
+    }
+    .focus-timer {
+      background: linear-gradient(135deg, var(--warm-offwhite), var(--pure-white));
+      text-align: center;
+      padding: 24px;
+    }
+    .timer-display {
+      font-size: 3rem;
+      font-weight: 700;
+      font-family: monospace;
+      margin: 16px 0;
+    }
+    .menu-sidebar {
+      background: var(--pure-white);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+    }
+    .menu-sidebar ul {
+      list-style: none;
+    }
+    .menu-sidebar li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--light-greige);
+    }
+    .menu-sidebar a {
+      text-decoration: none;
+      color: var(--charcoal);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: var(--transition);
+    }
+    .menu-sidebar a:hover {
+      color: var(--warm-taupe);
+      transform: translateX(5px);
+    }
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background: var(--pure-white);
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .menu-toggle {
+        display: block;
+      }
+      .two-columns {
+        grid-template-columns: 1fr;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">📚 StudyFlow</a>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="planner-setup.html">Planner Setup</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="daily-plan.html">Daily Plan</a></li>
+      <li><a href="reschedule.html">Reschedule</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <!-- Header with time and greeting -->
+    <div class="time-greeting">
+      <div>
+        <span id="currentTime" style="font-size: 1.5rem; font-weight: 600;"></span>
+        <span id="currentDate" style="color: var(--charcoal); margin-left: 12px;"></span>
+      </div>
+      <div>
+        <span class="badge">3 tasks due today</span>
+      </div>
+    </div>
+    
+    <div class="dashboard-header">
+      <h2>Good morning, Maddie. 👋</h2>
+      <button class="btn btn-sm" onclick="window.location.href='planner-setup.html'">+ Add New Task</button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div style="font-size: 2rem;">📚</div>
+        <div class="stat-number" id="overdueTasks">0</div>
+        <div>Overdue Tasks</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size: 2rem;">✅</div>
+        <div class="stat-number" id="completedTasks">0</div>
+        <div>Tasks Completed</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size: 2rem;">🔥</div>
+        <div class="stat-number" id="streak">0</div>
+        <div>Your Streak</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size: 2rem;">📊</div>
+        <div class="stat-number" id="totalPlanned">0</div>
+        <div>Total Planned Hours</div>
+      </div>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="two-columns">
+      <!-- Left Column: Today's Tasks -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3>📅 Today's Tasks</h3>
+          <span class="badge" id="todayProgress">0%</span>
+        </div>
+        <div id="todayTasksList"></div>
+        <div style="margin-top: 16px;">
+          <div style="background: var(--light-greige); border-radius: 10px; height: 8px; overflow: hidden;">
+            <div id="todayProgressBar" style="background: var(--warm-taupe); width: 0%; height: 100%; transition: width 0.3s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Focus Timer -->
+      <div class="card focus-timer">
+        <h3>🎯 Focus Timer</h3>
+        <div class="timer-display" id="timerDisplay">25:00</div>
+        <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 16px;">
+          <button class="btn btn-sm" id="startTimer">Start</button>
+          <button class="btn btn-sm btn-outline" id="pauseTimer">Pause</button>
+          <button class="btn btn-sm btn-outline" id="resetTimer">Reset</button>
+        </div>
+        <select id="timerPreset" style="padding: 6px; border-radius: 20px; border: 1px solid var(--light-greige);">
+          <option value="25">25 min (Pomodoro)</option>
+          <option value="50">50 min (Study)</option>
+          <option value="15">15 min (Break)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Second Row: Tomorrow's Tasks & Menu -->
+    <div class="two-columns">
+      <div class="card">
+        <h3>📅 Tomorrow's Schedule</h3>
+        <div id="tomorrowTasksList"></div>
+      </div>
+      
+      <div class="menu-sidebar">
+        <h3>📋 Menu</h3>
+        <ul>
+          <li><a href="dashboard.html">📊 Dashboard</a></li>
+          <li><a href="planner-setup.html">➕ Add New Subject</a></li>
+          <li><a href="#" id="darkModeBtn">🌙 Dark Mode (Coming Soon)</a></li>
+          <li><a href="#">📥 Data Import</a></li>
+          <li><a href="#">❓ Help Center</a></li>
+          <li><a href="#">📅 Calendar Sync</a></li>
+          <li><a href="#" id="logoutBtn">🚪 Log Out</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Third Row: Upcoming Deadlines -->
+    <div class="card">
+      <h3>⏰ Upcoming Deadlines & High-Risk Subjects</h3>
+      <div id="upcomingDeadlines"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2025 StudyFlow — Smart study planner</p>
+  </div>
+</footer>
+
+<script>
+  // Load data from localStorage
+  let subjects = JSON.parse(localStorage.getItem('study_subjects')) || [
+    {name: "Mathematics", hours: 22, priority: 5, exam: "2025-06-10", completed: false},
+    {name: "Physics", hours: 18, priority: 4, exam: "2025-06-15", completed: false},
+    {name: "Literature", hours: 12, priority: 3, exam: "2025-06-20", completed: false},
+    {name: "Chemistry", hours: 16, priority: 4, exam: "2025-06-12", completed: false}
+  ];
+  
+  let schedule = JSON.parse(localStorage.getItem('study_schedule')) || [];
+  let completedCount = subjects.filter(s => s.completed).length;
+  let today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  
+  // Update stats
+  document.getElementById('overdueTasks').innerText = subjects.filter(s => new Date(s.exam) < new Date() && !s.completed).length;
+  document.getElementById('completedTasks').innerText = completedCount;
+  document.getElementById('streak').innerText = Math.floor(Math.random() * 20) + 5;
+  document.getElementById('totalPlanned').innerText = subjects.reduce((sum, s) => sum + s.hours, 0);
+  
+  // Today's tasks
+  let todaysTasks = schedule.filter(t => t.day === today);
+  let completedToday = todaysTasks.filter(t => t.completed).length;
+  let todayPercent = todaysTasks.length ? (completedToday / todaysTasks.length) * 100 : 0;
+  document.getElementById('todayProgress').innerText = Math.round(todayPercent) + '%';
+  document.getElementById('todayProgressBar').style.width = todayPercent + '%';
+  
+  function renderTodayTasks() {
+    let html = '';
+    todaysTasks.forEach((task, idx) => {
+      html += `<div class="task-item">
+        <div>
+          <div class="task-category">${task.subject}</div>
+          <div class="task-title">Study Session</div>
+          <div class="task-time">⏰ ${Math.floor(Math.random() * 4) + 1} hours</div>
+        </div>
+        <input type="checkbox" data-idx="${idx}" ${task.completed ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+      </div>`;
+    });
+    if (todaysTasks.length === 0) html = '<p>No tasks scheduled for today. Relax! 🎉</p>';
+    document.getElementById('todayTasksList').innerHTML = html;
+    
+    document.querySelectorAll('#todayTasksList input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        let idx = e.target.dataset.idx;
+        if (todaysTasks[idx]) {
+          todaysTasks[idx].completed = e.target.checked;
+          localStorage.setItem('study_schedule', JSON.stringify(schedule));
+          location.reload();
+        }
+      });
+    });
+  }
+  
+  function renderTomorrowTasks() {
+    let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    let tomorrowIndex = (days.indexOf(today) + 1) % 7;
+    let tomorrow = days[tomorrowIndex];
+    let tomorrowsTasks = schedule.filter(t => t.day === tomorrow);
+    let html = '';
+    tomorrowsTasks.forEach(task => {
+      html += `<div class="task-item">
+        <div>
+          <div class="task-category">${task.subject}</div>
+          <div class="task-title">Study Block</div>
+          <div class="task-time">📚 ${task.hours.toFixed(1)} hours</div>
+        </div>
+        <span class="badge">Due Tomorrow</span>
+      </div>`;
+    });
+    if (tomorrowsTasks.length === 0) html = '<p>No tasks scheduled for tomorrow. Great planning!</p>';
+    document.getElementById('tomorrowTasksList').innerHTML = html;
+  }
+  
+  function renderDeadlines() {
+    let sorted = [...subjects].sort((a, b) => new Date(a.exam) - new Date(b.exam));
+    let html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+    sorted.slice(0, 5).forEach(sub => {
+      let daysLeft = Math.ceil((new Date(sub.exam) - new Date()) / (1000 * 3600 * 24));
+      let riskClass = daysLeft < 7 ? '🔴' : daysLeft < 14 ? '🟡' : '🟢';
+      html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--light-greige);">
+        <div><strong>${sub.name}</strong><br><small>Exam: ${sub.exam}</small></div>
+        <div>${riskClass} ${daysLeft} days left</div>
+        <button class="btn btn-sm btn-outline" onclick="alert('Focus on ${sub.name}! Prioritize this subject.')">Focus →</button>
+      </div>`;
+    });
+    html += '</div>';
+    document.getElementById('upcomingDeadlines').innerHTML = html;
+  }
+  
+  // Timer functionality
+  let timerInterval;
+  let timeLeft = 25 * 60;
+  let isRunning = false;
+  
+  function updateTimerDisplay() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    document.getElementById('timerDisplay').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+  
+  document.getElementById('startTimer')?.addEventListener('click', () => {
+    if (timerInterval) clearInterval(timerInterval);
+    isRunning = true;
+    timerInterval = setInterval(() => {
+      if (timeLeft > 0 && isRunning) {
+        timeLeft--;
+        updateTimerDisplay();
+      } else if (timeLeft === 0) {
+        clearInterval(timerInterval);
+        alert('Time is up! Great focus session!');
+        isRunning = false;
+      }
+    }, 1000);
+  });
+  
+  document.getElementById('pauseTimer')?.addEventListener('click', () => {
+    isRunning = false;
+    clearInterval(timerInterval);
+  });
+  
+  document.getElementById('resetTimer')?.addEventListener('click', () => {
+    isRunning = false;
+    clearInterval(timerInterval);
+    let preset = parseInt(document.getElementById('timerPreset').value);
+    timeLeft = preset * 60;
+    updateTimerDisplay();
+  });
+  
+  document.getElementById('timerPreset')?.addEventListener('change', (e) => {
+    if (!isRunning) {
+      timeLeft = parseInt(e.target.value) * 60;
+      updateTimerDisplay();
+    }
+  });
+  
+  // Update time
+  function updateTime() {
+    let now = new Date();
+    document.getElementById('currentTime').innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+  
+  // Logout functionality
+  document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (confirm('Are you sure you want to log out?')) {
+      alert('Logged out successfully!');
+      window.location.href = 'index.html';
+    }
+  });
+  
+  renderTodayTasks();
+  renderTomorrowTasks();
+  renderDeadlines();
+  updateTimerDisplay();
+  
+  document.getElementById('menuToggle')?.addEventListener('click', () => {
+    document.getElementById('navLinks')?.classList.toggle('show');
+  });
+</script>
+</body>
+</html>

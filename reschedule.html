@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reschedule View | StudyFlow</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f7f7f7; color: #262524; }
+    :root {
+      --pure-white: #fdfdfd; --warm-taupe: #a7917f; --charcoal: #585653;
+      --light-greige: #e0deda; --warm-offwhite: #eeedeb; --near-black: #262524;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+      --card-radius: 24px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+    h2 { font-size: 2rem; border-left: 5px solid var(--warm-taupe); padding-left: 1rem; margin-bottom: 1.5rem; }
+    h3 { font-size: 1.2rem; margin-bottom: 1rem; }
+    .section { padding: 48px 0; }
+    .card { background: white; border-radius: var(--card-radius); padding: 1.5rem; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+    .task-card { background: var(--warm-offwhite); border-radius: 20px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.2s; }
+    .task-card:hover { transform: translateX(5px); box-shadow: var(--shadow-sm); }
+    .task-card.selected { border: 2px solid var(--warm-taupe); background: white; }
+    .btn { background: var(--warm-taupe); padding: 12px 28px; border-radius: 40px; border: none; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--warm-taupe); }
+    .btn:hover { transform: translateY(-2px); }
+    .navbar { background: white; box-shadow: var(--shadow-sm); position: sticky; top: 0; }
+    .nav-container { display: flex; justify-content: space-between; padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--charcoal); font-weight: 500; }
+    .nav-links a.active { color: var(--warm-taupe); }
+    .menu-toggle { display: none; }
+    footer { background: var(--near-black); color: white; text-align: center; padding: 40px; margin-top: 40px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .recommendation { background: var(--warm-offwhite); padding: 12px; border-radius: 16px; margin-top: 12px; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; background: white; width: 100%; top: 70px; left: 0; padding: 20px; }
+      .nav-links.show { display: flex; }
+      .menu-toggle { display: block; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">📚 StudyFlow</a>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="planner-setup.html">Planner Setup</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="daily-plan.html">Daily Plan</a></li>
+      <li><a href="reschedule.html" class="active">Reschedule</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <h2>🔄 Reschedule Missed Tasks</h2>
+    
+    <div class="grid-2">
+      <!-- Left: Missed Tasks -->
+      <div class="card">
+        <h3>⏰ Pending / Missed Tasks</h3>
+        <p style="margin-bottom: 16px; color: var(--charcoal);">Select a task to reschedule to a better time slot</p>
+        <div id="missedList"></div>
+      </div>
+      
+      <!-- Right: Recommendations -->
+      <div class="card">
+        <h3>💡 Reschedule Recommendations</h3>
+        <div id="recommendations">
+          <p>Select a task to see available time slots</p>
+        </div>
+        <div style="margin-top: 20px;">
+          <button id="autoRescheduleBtn" class="btn">🔄 Auto-Reschedule Selected</button>
+          <button id="smartOptimizeBtn" class="btn btn-outline" style="margin-left: 12px;">✨ Smart Optimize All</button>
+        </div>
+        <div id="resultMsg" style="margin-top: 20px;"></div>
+      </div>
+    </div>
+    
+    <!-- Upcoming Availability -->
+    <div class="card">
+      <h3>📅 Upcoming Available Slots</h3>
+      <div id="availableSlots"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container"><p>© 2025 StudyFlow — Flexible scheduling for busy students</p></div>
+</footer>
+
+<script>
+  let schedule = JSON.parse(localStorage.getItem('study_schedule')) || [];
+  let selectedTaskIndex = null;
+  
+  function getAvailableSlots() {
+    let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    let dailyCap = parseFloat(localStorage.getItem('dailyHours') || 5);
+    let slots = [];
+    days.forEach(day => {
+      let existing = schedule.filter(t => t.day === day).reduce((sum, t) => sum + t.hours, 0);
+      let available = dailyCap - existing;
+      if (available > 1) {
+        slots.push({day, available: available.toFixed(1)});
+      }
+    });
+    return slots;
+  }
+  
+  function renderMissedTasks() {
+    let pending = schedule.filter(t => !t.completed);
+    if (pending.length === 0) {
+      document.getElementById('missedList').innerHTML = '<p style="text-align: center; padding: 40px;">🎉 No pending tasks! You\'re all caught up!</p>';
+      return;
+    }
+    let html = '';
+    pending.forEach((task, idx) => {
+      html += `<div class="task-card" data-idx="${idx}">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong>${task.subject}</strong><br>
+            <small>📅 Currently: ${task.day} • ⏰ ${task.hours.toFixed(1)} hours</small>
+          </div>
+          <span class="badge" style="background: #e0deda;">Pending</span>
+        </div>
+      </div>`;
+    });
+    document.getElementById('missedList').innerHTML = html;
+    
+    document.querySelectorAll('.task-card').forEach((card, i) => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.task-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedTaskIndex = i;
+        showRecommendations(pending[i]);
+      });
+    });
+  }
+  
+  function showRecommendations(task) {
+    let slots = getAvailableSlots();
+    if (slots.length === 0) {
+      document.getElementById('recommendations').innerHTML = '<p>⚠️ No available slots found. Consider adjusting your daily hours.</p>';
+      return;
+    }
+    let html = `<p>Recommended slots for "${task.subject}" (${task.hours.toFixed(1)} hours):</p>`;
+    slots.slice(0, 3).forEach(slot => {
+      html += `<div class="recommendation">
+        <strong>📅 ${slot.day}</strong> - ${slot.available} hours available
+        <button class="btn-sm" onclick="quickRescheduleTo('${slot.day}')" style="margin-left: 12px; padding: 4px 12px; background: var(--warm-taupe); border: none; border-radius: 20px; cursor: pointer;">Move Here →</button>
+      </div>`;
+    });
+    document.getElementById('recommendations').innerHTML = html;
+  }
+  
+  window.quickRescheduleTo = function(day) {
+    let pending = schedule.filter(t => !t.completed);
+    if (selectedTaskIndex !== null && pending[selectedTaskIndex]) {
+      let task = pending[selectedTaskIndex];
+      task.day = day;
+      localStorage.setItem('study_schedule', JSON.stringify(schedule));
+      document.getElementById('resultMsg').innerHTML = `<div class="card" style="background: #e8f5e9;">✅ "${task.subject}" moved to ${day}! Schedule updated.</div>`;
+      renderMissedTasks();
+      renderAvailableSlots();
+      setTimeout(() => document.getElementById('resultMsg').innerHTML = '', 3000);
+    }
+  };
+  
+  function renderAvailableSlots() {
+    let slots = getAvailableSlots();
+    let html = '<div style="display: flex; gap: 12px; flex-wrap: wrap;">';
+    slots.forEach(slot => {
+      html += `<div style="background: var(--warm-offwhite); padding: 12px 20px; border-radius: 20px;">
+        <strong>${slot.day}</strong><br>${slot.available} hrs free
+      </div>`;
+    });
+    if (slots.length === 0) html = '<p>No available slots. Consider increasing daily available hours in Planner Setup.</p>';
+    html += '</div>';
+    document.getElementById('availableSlots').innerHTML = html;
+  }
+  
+  document.getElementById('autoRescheduleBtn')?.addEventListener('click', () => {
+    let pending = schedule.filter(t => !t.completed);
+    if (selectedTaskIndex !== null && pending[selectedTaskIndex]) {
+      let task = pending[selectedTaskIndex];
+      let slots = getAvailableSlots();
+      if (slots.length > 0) {
+        task.day = slots[0].day;
+        localStorage.setItem('study_schedule', JSON.stringify(schedule));
+        document.getElementById('resultMsg').innerHTML = `<div class="card">🔄 "${task.subject}" auto-rescheduled to ${slots[0].day}!</div>`;
+        renderMissedTasks();
+        renderAvailableSlots();
+      } else {
+        document.getElementById('resultMsg').innerHTML = '<div class="card">⚠️ No available slots. Please adjust your availability.</div>';
+      }
+    } else {
+      document.getElementById('resultMsg').innerHTML = '<div class="card">⚠️ Please select a task to reschedule.</div>';
+    }
+  });
+  
+  document.getElementById('smartOptimizeBtn')?.addEventListener('click', () => {
+    let slots = getAvailableSlots();
+    let pending = schedule.filter(t => !t.completed);
+    pending.forEach((task, i) => {
+      if (slots[i % slots.length]) {
+        task.day = slots[i % slots.length].day;
+      }
+    });
+    localStorage.setItem('study_schedule', JSON.stringify(schedule));
+    document.getElementById('resultMsg').innerHTML = '<div class="card">✨ All pending tasks optimized across available slots!</div>';
+    renderMissedTasks();
+    renderAvailableSlots();
+  });
+  
+  renderMissedTasks();
+  renderAvailableSlots();
+  
+  document.getElementById('menuToggle')?.addEventListener('click', () => {
+    document.getElementById('navLinks')?.classList.toggle('show');
+  });
+</script>
+</body>
+</html>
