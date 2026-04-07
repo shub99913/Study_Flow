@@ -31,9 +31,9 @@ A comprehensive, student-focused study planner web application that transforms c
 project/
 
 ├── index.html # Landing page  
-├── about.html # About & how it works
-├── contact.html # Contact form
-├── planner-setup.html # Subject & preference input
-├── dashboard.html # Main dashboard with KPIs
-├── daily-plan.html # Today's checklist
-├── reschedule.html # Missed task management
+├── about.html # About & how it works      
+├── contact.html # Contact form     
+├── planner-setup.html # Subject & preference input      
+├── dashboard.html # Main dashboard with KPIs       
+├── daily-plan.html # Today's checklist       
+├── reschedule.html # Missed task management    
